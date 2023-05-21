@@ -1,57 +1,60 @@
 package com.driver;
 
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 
-@Service
 public class WhatsappService {
     WhatsappRepository whatsappRepository=new WhatsappRepository();
-    public String createUser(String name, String mobile) {
 
-        if(whatsappRepository.numberExist(mobile))
-            return "User already exists";
-        whatsappRepository.createUser(name,mobile);
-        return "SUCCESS";
+
+
+    public String createUser(String name, String mobile) throws Exception {
+        if(checkUserExist(mobile))
+        {
+            throw new Exception("User already exists");
+        }
+        return whatsappRepository.createUser(name,mobile);
     }
 
-    public Group createGroup(List<User> users) {
-        int size= users.size();
-        if(size==2)
-            return whatsappRepository.createPersonalChat(users);
+    public boolean checkUserExist(String mobile) {
+        return whatsappRepository.checkUserExist(mobile);
+    }
 
-        return whatsappRepository.createGroup(users);
+
+    public Group createGroup(List<User> users) {
+
+        if(users.size()==2)
+        {
+            // If there are only 2 users, the group is a personal chat and the group name should be kept as the name of the second user(other than admin)
+           return whatsappRepository.createPersonalChat(users);
+        }
+        else
+            return whatsappRepository.createGroup(users);
 
     }
 
     public int createMessage(String content) {
         return whatsappRepository.createMessage(content);
+
+
     }
 
-    public int sendMessage(Message message, User sender, Group group) throws Exception {
-        if(!whatsappRepository.groupExist(group))
-            throw new Exception("Group does not exist");
-        if(!whatsappRepository.userNotInGroup(sender,group))
-            throw new Exception("You are not allowed to send message");
+    public boolean checkGroupExist(Group group) {
+        return whatsappRepository.checkGroupExist(group);
+    }
+
+    public boolean userInTheGroup(User sender, Group group) {
+        return whatsappRepository.isUserInTheGroup(sender,group);
+    }
+
+    public int sendMessage(Message message, User sender, Group group) {
         return whatsappRepository.sendMessage(message,sender,group);
     }
 
-
-    public boolean isAdmin(Group group, User user) {
-        User admin=whatsappRepository.getAdmin(group);
-        if(admin.equals(user))
-            return true;
-        return false;
+    public boolean notAdminOfGroup(Group group, User approver) {
+        return whatsappRepository.notAdminOfGroup(group,approver);
     }
 
-    public boolean userInTheGroup(User sender,Group group) {
-        return whatsappRepository.userNotInGroup(sender,group);
-    }
-    public boolean checkGroupExist(Group group) {
-        return whatsappRepository.groupExist(group);
-    }
-
-    public void changeAdmin(User user, Group group) {
-        whatsappRepository.changeAdmin(user,group);
+    public String changeAdmin(User approver, Group group, User user) {
+        return whatsappRepository.changeAdmin(approver,group,user);
     }
 }
