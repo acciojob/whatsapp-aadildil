@@ -62,13 +62,13 @@ public class WhatsappRepository {
     public Group createGroup(List<User> users) {
         int count=users.size();
         customGroupCount++;
-        String name="Group "+customGroupCount;
+        String name="Group "+String.valueOf(customGroupCount);
         User admin=users.get(0);
 
         Group group=new Group(name,count);
         adminMap.put(group,admin);
         groupUserMap.put(group,users);
-        customGroupCount++;
+
         return group;
     }
 
