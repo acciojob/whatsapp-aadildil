@@ -28,6 +28,14 @@ public class WhatsappRepository {
 
     private static int messageCount;
 
+    public static int getCustomGroupCount() {
+        return customGroupCount;
+    }
+
+    public static void setCustomGroupCount(int customGroupCount) {
+        WhatsappRepository.customGroupCount = customGroupCount;
+    }
+
     public WhatsappRepository() {
         this.groupUserMap=new HashMap<>();
         this.groupMessageMap=new HashMap<>();
@@ -61,8 +69,10 @@ public class WhatsappRepository {
 
     public Group createGroup(List<User> users) {
         int count=users.size();
-        customGroupCount++;
-        String name="Group "+String.valueOf(customGroupCount);
+        int groupCount = getCustomGroupCount();
+        groupCount++;
+        setCustomGroupCount(groupCount);
+       String name="Group "+ groupCount;
         User admin=users.get(0);
 
         Group group=new Group(name,count);
