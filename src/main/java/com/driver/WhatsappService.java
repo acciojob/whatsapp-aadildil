@@ -8,9 +8,9 @@ import java.util.Optional;
 
 @Service
 public class WhatsappService {
-//    @Autowired
-//    WhatsappRepository whatsappRepositor;
-WhatsappRepository whatsappRepositor=new WhatsappRepository();
+    @Autowired
+    WhatsappRepository whatsappRepositor;
+//WhatsappRepository whatsappRepositor=new WhatsappRepository();
 
     public void createUser(String name, String mobile) throws Exception {
 
