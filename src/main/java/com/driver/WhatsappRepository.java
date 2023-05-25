@@ -24,9 +24,9 @@ public class WhatsappRepository {
 
     private HashMap<Integer, Message> messageMap;
 
-    private static int customGroupCount=0;
+    private static int customGroupCount;
 
-    private static int messageCount=0;
+    private static int messageCount;
 
     public WhatsappRepository() {
         this.groupUserMap=new HashMap<>();
