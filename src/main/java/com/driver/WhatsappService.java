@@ -1,60 +1,41 @@
 package com.driver;
 
+import org.springframework.stereotype.Service;
+
 import java.util.List;
+import java.util.Optional;
 
+@Service
 public class WhatsappService {
-    WhatsappRepository whatsappRepository=new WhatsappRepository();
+    WhatsappRepository whatsappRepositor=new WhatsappRepository();
+    public void createUser(String name, String mobile) throws Exception {
 
 
-
-    public String createUser(String name, String mobile) throws Exception {
-        if(checkUserExist(mobile))
-        {
-            throw new Exception("User already exists");
-        }
-        return whatsappRepository.createUser(name,mobile);
+         if(  whatsappRepositor.findUserByNumber(mobile))
+             throw new Exception("User already exists");
+         User user=new User(name,mobile);
+         whatsappRepositor.addUser(user);
     }
-
-    public boolean checkUserExist(String mobile) {
-        return whatsappRepository.checkUserExist(mobile);
-    }
-
 
     public Group createGroup(List<User> users) {
 
-        if(users.size()==2)
-        {
-            // If there are only 2 users, the group is a personal chat and the group name should be kept as the name of the second user(other than admin)
-           return whatsappRepository.createPersonalChat(users);
-        }
+        int n=users.size();
+        if(n==2)
+            return whatsappRepositor.createPersonalChat(users);
         else
-            return whatsappRepository.createGroup(users);
+            return whatsappRepositor.createGroup(users);
 
     }
 
     public int createMessage(String content) {
-        return whatsappRepository.createMessage(content);
-
-
+        return whatsappRepositor.createMessage(content);
     }
 
-    public boolean checkGroupExist(Group group) {
-        return whatsappRepository.checkGroupExist(group);
+    public int sendMessage(Message message, User sender, Group group) throws Exception {
+        return whatsappRepositor.sendMessage(message,sender,group);
     }
 
-    public boolean userInTheGroup(User sender, Group group) {
-        return whatsappRepository.isUserInTheGroup(sender,group);
-    }
-
-    public int sendMessage(Message message, User sender, Group group) {
-        return whatsappRepository.sendMessage(message,sender,group);
-    }
-
-    public boolean notAdminOfGroup(Group group, User approver) {
-        return whatsappRepository.notAdminOfGroup(group,approver);
-    }
-
-    public String changeAdmin(User approver, Group group, User user) {
-        return whatsappRepository.changeAdmin(approver,group,user);
+    public String changeAdmin(User approver, User user, Group group) throws Exception {
+        return whatsappRepositor.changeAdmin(approver,user,group);
     }
 }
